@@ -1,0 +1,37 @@
+<form id="form" style="width: 320px; margin: 20px auto; padding: 20px; background: #9CC6DB; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+    <textarea id="text" placeholder="Tulis teks di sini..." 
+        style="width: 100%; height: 120px; padding: 10px; border: 2px solid #CF4B00; border-radius: 6px; outline: none; resize: none; font-size: 14px;">
+    </textarea>
+
+    <button type="submit" 
+        style="margin-top: 12px; width: 100%; padding: 10px; background: #CF4B00; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; transition: 0.3s;">
+        Cek KBGO
+    </button>
+</form>
+
+<p id="result" style="text-align:center; font-size: 18px; margin-top: 10px; font-weight: bold;"></p>
+
+<script>
+document.getElementById("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    let text = document.getElementById("text").value;
+
+    let res = await fetch("/predict", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({text})
+    });
+
+    let data = await res.json();
+    document.getElementById("result").innerText = data.result;
+});
+
+// efek hover inline (harus pakai JS)
+const btn = document.querySelector("button");
+btn.addEventListener("mouseover", () => {
+    btn.style.background = "#A63E00"; // lebih gelap saat hover
+});
+btn.addEventListener("mouseout", () => {
+    btn.style.background = "#CF4B00"; // kembali normal
+});
+</script>
