@@ -1,37 +1,190 @@
-<form id="form" style="width: 320px; margin: 20px auto; padding: 20px; background: #9CC6DB; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-    <textarea id="text" placeholder="Tulis teks di sini..." 
-        style="width: 100%; height: 120px; padding: 10px; border: 2px solid #CF4B00; border-radius: 6px; outline: none; resize: none; font-size: 14px;">
-    </textarea>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deteksi KBGO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-    <button type="submit" 
-        style="margin-top: 12px; width: 100%; padding: 10px; background: #CF4B00; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; transition: 0.3s;">
-        Cek KBGO
-    </button>
-</form>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+        }
 
-<p id="result" style="text-align:center; font-size: 18px; margin-top: 10px; font-weight: bold;"></p>
+        .container {
+            display: flex;
+            flex-direction: row; 
+            gap: 24px;           
+            max-width: 1000px;   
+            margin: 40px auto;
+            padding: 20px;
+            align-items: flex-start; 
+        }
+
+        /* Card Style */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            flex: 1;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #CF4B00;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        p.description {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            resize: none;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #CF4B00;
+        }
+
+        button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            background: #CF4B00;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #A63E00;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(207, 75, 0, 0.3);
+        }
+
+        #result {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            min-height: 24px;
+        }
+
+        /* About Section */
+        .about-section {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .about-section p{
+            text-align: justify;
+        }
+
+        .about-section h3 {
+            color: #333;
+            font-size: 18px;
+            border-bottom: 2px solid #CF4B00;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Cek Potensi KBGO</h2>
+        <p class="description">Gunakan alat ini untuk mendeteksi apakah suatu teks mengandung unsur pelecehan atau kekerasan berbasis gender.</p>
+        
+        <form id="form">
+            <textarea id="text" placeholder="Masukkan atau tempel teks di sini..."></textarea>
+            <button type="submit" id="submitBtn">Analisis Sekarang</button>
+        </form>
+
+        <p id="result"></p>
+    </div>
+
+    <div class="card about-section">
+        <h3>Tentang Alat Ini</h3>
+        <p>
+            Penelitian oleh Reed et al. (2019) di San Diego County, California, Amerika Serikat menunjukkan bahwa 68% dari 159 remaja perempuan usia 15–19 tahun mengalami kekerasan seksual siber, seperti pesan atau gambar seksual yang tidak diinginkan (53%), permintaan seksual (49%), intimidasi untuk mendapatkan foto seksual (36%), serta penyebaran foto tanpa izin (6%).
+        </p>
+        <p>
+            Menanggapi tingginya kasus tersebut, platform ini dikembangkan untuk membantu mendeteksi indikasi Kekerasan Berbasis Gender Online (KBGO) secara verbal pada media digital menggunakan teknologi pemrosesan bahasa alami.
+        </p>
+    </div>
+</div>
 
 <script>
 document.getElementById("form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const resultEl = document.getElementById("result");
+    const submitBtn = document.getElementById("submitBtn");
     let text = document.getElementById("text").value;
 
-    let res = await fetch("/predict", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({text})
-    });
+    if(!text.trim()) {
+        resultEl.innerText = "Silakan masukkan teks terlebih dahulu.";
+        resultEl.style.color = "#d9534f";
+        return;
+    }
 
-    let data = await res.json();
-    document.getElementById("result").innerText = data.result;
-});
+    // Loading state
+    submitBtn.innerText = "Memproses...";
+    submitBtn.disabled = true;
+    resultEl.innerText = "Sedang menganalisis...";
+    resultEl.style.color = "#666";
 
-// efek hover inline (harus pakai JS)
-const btn = document.querySelector("button");
-btn.addEventListener("mouseover", () => {
-    btn.style.background = "#A63E00"; // lebih gelap saat hover
-});
-btn.addEventListener("mouseout", () => {
-    btn.style.background = "#CF4B00"; // kembali normal
+    try {
+        let res = await fetch("/predict", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({text})
+        });
+
+        let data = await res.json();
+        resultEl.innerText = "Hasil: " + data.result;
+        resultEl.style.color = "#CF4B00";
+    } catch (error) {
+        resultEl.innerText = "Gagal memproses data. Coba lagi nanti.";
+    } finally {
+        submitBtn.innerText = "Analisis Sekarang";
+        submitBtn.disabled = false;
+    }
 });
 </script>
+
+</body>
+</html>
