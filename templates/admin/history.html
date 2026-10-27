@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+{% block title %}Riwayat Prediksi{% endblock %}
+{% block content %}
+<h1>Riwayat Prediksi <small>{{ total }} data</small></h1>
+<form class="filters" method="get">
+    <input name="q" placeholder="Cari teks…" value="{{ args.get('q','') }}">
+    <input name="visitor" placeholder="ID pengunjung" value="{{ args.get('visitor','') }}">
+    <select name="label">
+        <option value="">Semua label</option>
+        {% for l in ['KBGO','Non-KBGO','Tidak pasti'] %}<option {{ 'selected' if args.get('label')==l }}>{{ l }}</option>{% endfor %}
+    </select>
+    <label class="chk"><input type="checkbox" name="disagree" value="1" {{ 'checked' if args.get('disagree')=='1' }}> ML ≠ LLM</label>
+    <button type="submit">Filter</button>
+    <a class="btn-ghost" href="{{ url_for('admin_history_export') }}">Ekspor CSV</a>
+    <button type="button" class="btn-danger" data-open="delete-all" {{ 'disabled' if not total_all }}>Hapus Semua</button>
+</form>
+
+<dialog id="delete-all" class="modal">
+    <form method="post" action="{{ url_for('admin_history_delete_all') }}">
+        <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+        <div class="modal-icon">!</div>
+        <h3>Hapus semua riwayat prediksi?</h3>
+        <p><b>{{ total_all }} riwayat</b> akan dihapus permanen dan <b>tidak dapat dikembalikan</b>. Log aktivitas tidak ikut terhapus. Pertimbangkan untuk <a href="{{ url_for('admin_history_export') }}">mengekspor CSV</a> terlebih dahulu.</p>
+        <p>Untuk melanjutkan, ketik kalimat berikut persis seperti tertulis:</p>
+        <code class="phrase">{{ delete_phrase }}</code>
+        <input name="confirm" id="delete-confirm" data-phrase="{{ delete_phrase }}" autocomplete="off" spellcheck="false" placeholder="Ketik kalimat di atas">
+        <div class="modal-actions">
+            <button type="button" class="btn-ghost" data-close>Batal</button>
+            <button type="submit" class="btn-danger" id="delete-submit" disabled>Hapus Semua</button>
+        </div>
+    </form>
+</dialog>
+<div class="panel scroll">
+<table>
+    <tr><th>Waktu (UTC)</th><th>Pengunjung</th><th>Teks</th><th>ML</th><th>LLM</th><th>Final</th><th></th></tr>
+    {% for r in rows %}
+    <tr>
+        <td>{{ r.ts }}</td>
+        <td><a href="?visitor={{ r.visitor_id[:8] }}"><code>{{ r.visitor_id[:8] }}</code></a><br><small class="muted">{{ r.ip }}</small></td>
+        <td class="text-cell">{% if r.text is none %}<i class="muted">(tidak disimpan, {{ r.text_len }} karakter)</i>{% else %}{{ r.text }}{% endif %}
+            {% if r.llm_explanation %}<details><summary>Penjelasan LLM</summary>{{ r.llm_explanation }}</details>{% endif %}
+            {% if r.llm_error %}<small class="err">LLM gagal: {{ r.llm_error }}</small>{% endif %}</td>
+        <td>{{ r.ml_label }}<br><small class="muted">{{ '%.0f'|format(r.ml_prob*100) }}%</small></td>
+        <td>{% if r.llm_used %}{{ r.llm_label }}{% if r.llm_confidence is not none %} <small class="muted">{{ '%.0f'|format(r.llm_confidence*100) }}%</small>{% endif %}<br><small class="muted">{{ r.llm_category }}</small>{% else %}–{% endif %}</td>
+        <td><span class="tag {{ 'rose' if r.final_label=='KBGO' else ('amber' if r.final_label=='Tidak pasti' else 'sage') }}">{{ r.final_label }}</span>{% if r.disagree %} <span class="tag amber">tinjau</span>{% endif %}</td>
+        <td>
+            <form method="post" action="{{ url_for('admin_history_delete') }}" onsubmit="return confirm('Hapus riwayat ini?')">
+                <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="id" value="{{ r.id }}">
+                <button class="link-danger">Hapus</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}<tr><td colspan="7" class="muted">Tidak ada data.</td></tr>{% endfor %}
+</table>
+</div>
+{% include "admin/_pager.html" %}
+{% endblock %}

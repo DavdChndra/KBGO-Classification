@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+{% block title %}Pengaturan{% endblock %}
+{% block content %}
+<h1>Pengaturan Website</h1>
+<form method="post" class="settings">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+
+    <section class="panel">
+        <h3>Umum</h3>
+        <label>Nama situs<input name="site_name" value="{{ settings.site_name }}" maxlength="60"></label>
+        <label>Pengumuman (tampil di semua halaman publik, kosongkan untuk menyembunyikan)
+            <input name="announcement" value="{{ settings.announcement }}" maxlength="300"></label>
+        <label class="chk"><input type="checkbox" name="maintenance_mode" {{ 'checked' if settings.maintenance_mode=='1' }}> Mode pemeliharaan (pengunjung melihat halaman 503; admin tetap bisa masuk)</label>
+    </section>
+
+    <section class="panel">
+        <h3>Analisis &amp; privasi</h3>
+        <div class="row">
+            <label>Maks. panjang teks (karakter)<input type="number" name="max_text_length" min="50" max="20000" value="{{ settings.max_text_length }}"></label>
+            <label>Batas permintaan / menit / IP<input type="number" name="rate_limit_per_minute" min="1" max="1000" value="{{ settings.rate_limit_per_minute }}"></label>
+        </div>
+        <label class="chk"><input type="checkbox" name="store_text" {{ 'checked' if settings.store_text=='1' }}> Simpan isi teks yang dianalisis (bila mati, hanya hasil &amp; panjang teks yang dicatat)</label>
+        <label class="chk"><input type="checkbox" name="log_page_views" {{ 'checked' if settings.log_page_views=='1' }}> Catat kunjungan halaman di log aktivitas</label>
+    </section>
+
+    <section class="panel">
+        <h3>LLM (peningkatan akurasi &amp; penjelasan)</h3>
+        <p class="muted">API key dibaca dari environment variable <code>GROQ_API_KEY</code> di server — status:
+            {% if llm_ready %}<b class="ok">terdeteksi</b>{% else %}<b class="err">belum diatur</b>{% endif %}.</p>
+        <label class="chk"><input type="checkbox" name="llm_enabled" {{ 'checked' if settings.llm_enabled=='1' }}> Aktifkan LLM</label>
+        <div class="row">
+            <label>Mode
+                <select name="llm_mode">
+                    <option value="explain" {{ 'selected' if settings.llm_mode=='explain' }}>Penjelasan saja (keputusan tetap dari model ML)</option>
+                    <option value="hybrid" {{ 'selected' if settings.llm_mode=='hybrid' }}>Hybrid (LLM boleh mengoreksi bila ML ragu)</option>
+                </select></label>
+            <label>Model LLM<input name="llm_model" value="{{ settings.llm_model }}" maxlength="80"></label>
+            <label>Ambang keraguan ML (0.5–1.0)<input type="number" step="0.01" min="0.5" max="1" name="llm_override_threshold" value="{{ settings.llm_override_threshold }}"></label>
+        </div>
+        <p class="muted">Pada mode hybrid, bila LLM berbeda dengan ML dan keyakinan ML di bawah ambang, label LLM dipakai. Jika ML yakin, label ML tetap dipakai. Setiap perbedaan ditandai “tinjau” di Riwayat.</p>
+    </section>
+
+    <button type="submit" class="primary">Simpan pengaturan</button>
+</form>
+{% endblock %}

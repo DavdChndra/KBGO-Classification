@@ -1,0 +1,48 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="stats">
+    <div class="stat"><span>Total analisis</span><b>{{ stats.total }}</b></div>
+    <div class="stat"><span>Hari ini</span><b>{{ stats.today }}</b></div>
+    <div class="stat rose"><span>Terdeteksi KBGO</span><b>{{ stats.kbgo }}</b>
+        <small>{{ (stats.kbgo / stats.total * 100)|round(1) if stats.total else 0 }}% dari total</small></div>
+    <div class="stat"><span>Pengunjung unik</span><b>{{ stats.visitors }}</b></div>
+    <div class="stat"><span>Dianalisis LLM</span><b>{{ stats.llm }}</b>
+        <small>{{ stats.llm_errors }} gagal</small></div>
+    <div class="stat amber"><span>ML ≠ LLM (perlu tinjau)</span><b>{{ stats.disagree }}</b>
+        <small><a href="{{ url_for('admin_history', disagree=1) }}">lihat</a></small></div>
+    <div class="stat"><span>Rata-rata waktu</span><b>{{ stats.avg_latency|round|int }} ms</b></div>
+</div>
+
+{% if settings.llm_enabled == '1' and not llm_ready %}
+<div class="flash error">LLM aktif di pengaturan, tetapi GROQ_API_KEY belum diatur di server. Hasil memakai model ML saja.</div>
+{% endif %}
+
+<section class="panel">
+    <h3>Aktivitas 14 hari terakhir</h3>
+    {% if daily %}
+    <div class="bars">
+        {% for r in daily %}
+        <div class="bar-col" title="{{ r.day }}: {{ r.total }} analisis, {{ r.kbgo or 0 }} KBGO">
+            <div class="bar" style="height: {{ (r.total / peak * 100)|round|int }}%">
+                <div class="bar-kbgo" style="height: {{ ((r.kbgo or 0) / r.total * 100)|round|int }}%"></div>
+            </div>
+            <span>{{ r.day[5:] }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    <p class="legend"><i class="dot lav"></i> Non-KBGO <i class="dot rose"></i> KBGO</p>
+    {% else %}<p class="muted">Belum ada data.</p>{% endif %}
+</section>
+
+<section class="panel scroll">
+    <h3>Log terbaru <a class="more" href="{{ url_for('admin_logs') }}">Semua log →</a></h3>
+    <table>
+        <tr><th>Waktu (UTC)</th><th>Aktor</th><th>Aksi</th><th>Detail</th></tr>
+        {% for r in recent %}
+        <tr><td>{{ r.ts }}</td><td>{{ r.actor }}</td><td><span class="tag">{{ r.action }}</span></td><td>{{ r.detail }}</td></tr>
+        {% else %}<tr><td colspan="4" class="muted">Belum ada aktivitas.</td></tr>{% endfor %}
+    </table>
+</section>
+{% endblock %}

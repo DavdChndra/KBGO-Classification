@@ -1,0 +1,7 @@
+{% if pages > 1 %}
+<div class="pager">
+    {% if page > 1 %}<a href="{{ page_url(page - 1) }}">← Sebelumnya</a>{% endif %}
+    <span>Halaman {{ page }} / {{ pages }}</span>
+    {% if page < pages %}<a href="{{ page_url(page + 1) }}">Berikutnya →</a>{% endif %}
+</div>
+{% endif %}

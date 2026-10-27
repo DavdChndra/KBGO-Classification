@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Tim Peneliti{% endblock %}
+{% block nav_peneliti %}active{% endblock %}
+{% block content %}
+<div class="container-team">
+    <h2 class="section-title">Tim Peneliti</h2>
+    
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="profile-img">
+                <img src="{{ url_for('static', filename='images/Alila-Pramiyanti.png') }}" alt="Alila Pramiyanti">
+            </div>
+            <div class="profile-info">
+                <h3>Alila Pramiyanti, Ph.D</h3>
+                <p class="expert"><strong>Kepakaran:</strong> Gender-Based Violence, Feminist Media Studies</p>
+                <p class="email">alilapramiyanti@telkomuniversity.ac.id</p>
+                <div class="links">
+                    <a href="https://scholar.google.co.id/citations?user=lUULE0gAAAAJ&hl=en" target="_blank">Google Scholar</a>
+                    <a href="https://www.scopus.com/authid/detail.uri?authorId=56195452900" target="_blank">Scopus</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <div class="profile-img">
+                <img src="{{ url_for('static', filename='images/Anggian-Lasmarinto-Pasaribu.png') }}" alt="Anggian Lasmarito">
+            </div>
+            <div class="profile-info">
+                <h3>Anggian Lasmarito Pasaribu, S.I.Kom., M.A</h3>
+                <p class="expert"><strong>Kepakaran:</strong> Media dan Gender</p>
+                <p class="email">anggianlp@telkomuniversity.ac.id</p>
+                <div class="links">
+                    <a href="https://scholar.google.com/citations?user=ZjJcdj4AAAAJ&hl=id&oi=ao" target="_blank">Google Scholar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <div class="profile-img">
+                <img src="{{ url_for('static', filename='images/Indra-Aulia.png') }}" alt="Indra Aulia">
+            </div>
+            <div class="profile-info">
+                <h3>Indra Aulia, S.TI., M.Kom.</h3>
+                <p class="expert"><strong>Kepakaran:</strong> AI, Threat Intelligence, Computational Linguistics</p>
+                <p class="email">indraaul@telkomuniversity.ac.id</p>
+                <div class="links">
+                    <a href="https://scholar.google.com/citations?user=JaUFyoAAAAAJ&hl=id" target="_blank">Google Scholar</a>
+                    <a href="https://www.scopus.com/authid/detail.uri?authorId=57188974601" target="_blank">Scopus</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Tim Programmer</h2>
+    
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="profile-img">
+                <img src="{{ url_for('static', filename='images/Raia-Pratam.png') }}" alt="Muhammad Raia Pratama Putra Wibowo">
+            </div>
+            <div class="profile-info">
+                <h3>Muhammad Raia Pratama Putra Wibowo</h3>
+                <p class="email">raiapw@student.telkomuniversity.ac.id</p>
+                <div class="links">
+                    <a href="https://www.linkedin.com/in/raiapw" target="_blank">Linkedin</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <div class="profile-img">
+                <img src="{{ url_for('static', filename='images/David-Chandra.jpg') }}" alt="David Chandra">
+            </div>
+            <div class="profile-info">
+                <h3>David Chandra</h3>
+                <p class="email">davidchandra@student.telkomuniversity.ac.id</p>
+                <div class="links">
+                    <a href="www.linkedin.com/in/davdchndra" target="_blank">Linkedin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Log Aktivitas{% endblock %}
+{% block content %}
+<h1>Log Aktivitas <small>{{ total }} entri</small></h1>
+<form class="filters" method="get">
+    <select name="action">
+        <option value="">Semua aksi</option>
+        {% for a in actions %}<option {{ 'selected' if args.get('action')==a }}>{{ a }}</option>{% endfor %}
+    </select>
+    <input name="actor" placeholder="Aktor (admin / visitor:…)" value="{{ args.get('actor','') }}">
+    <button type="submit">Filter</button>
+</form>
+<div class="panel scroll">
+<table>
+    <tr><th>Waktu (UTC)</th><th>Aktor</th><th>IP</th><th>Aksi</th><th>Detail</th><th>User-Agent</th></tr>
+    {% for r in rows %}
+    <tr><td>{{ r.ts }}</td><td>{{ r.actor }}</td><td>{{ r.ip }}</td><td><span class="tag">{{ r.action }}</span></td>
+        <td>{{ r.detail }}</td><td class="ua">{{ r.user_agent }}</td></tr>
+    {% else %}<tr><td colspan="6" class="muted">Tidak ada log.</td></tr>{% endfor %}
+</table>
+</div>
+{% include "admin/_pager.html" %}
+{% endblock %}

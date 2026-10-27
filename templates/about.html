@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Tentang{% endblock %}
+{% block nav_about %}active{% endblock %}
+{% block content %}
+<div class="about-container">
+    <h2 class="section-title">Tentang Platform</h2>
+    
+    <div class="about-card">
+        <div class="about-text">
+            <p>
+                Platform ini dikembangkan oleh tim peneliti <strong>Telkom University</strong> untuk membantu mendeteksi indikasi 
+                <span class="highlight">Kekerasan Berbasis Gender Online (KBGO)</span> secara verbal pada media digital. 
+                Melalui analisis bahasa menggunakan teknologi <span class="highlight">Natural Language Processing (NLP)</span>, 
+                sistem ini berfungsi sebagai mekanisme deteksi dini yang cerdas.
+            </p>
+            
+            <p>
+                Dengan memanfaatkan algoritma <em>Machine Learning</em>, platform ini mampu mengidentifikasi pola ujaran 
+                yang berpotensi mengandung kekerasan, pelecehan, atau diskriminasi di ruang digital secara otomatis dan akurat.
+            </p>
+
+            <hr>
+
+            <h3 class="center">Pendekatan SAFE AI</h3>
+            <p class="center muted">
+                Pengembangan sistem ini mengadopsi prinsip AI yang bertanggung jawab untuk memastikan ekosistem digital yang inklusif:
+            </p>
+
+            <div class="safe-ai-grid">
+                <div class="safe-item">Secure</div>
+                <div class="safe-item">Accountable</div>
+                <div class="safe-item">Fair</div>
+                <div class="safe-item">Explainable</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
