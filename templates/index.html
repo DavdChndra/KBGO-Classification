@@ -3,6 +3,7 @@
 {% block nav_home %}active{% endblock %}
 {% block content %}
 <div class="container">
+<div class="stack">
     <div class="card">
         <span class="eyebrow">Deteksi dini berbasis NLP</span>
         <h2>Cek Potensi KBGO</h2>
@@ -20,5 +21,16 @@
         <div id="result" aria-live="polite"></div>
         <p class="privacy">{% if settings.store_text == '1' %}Teks yang dianalisis dicatat untuk keperluan penelitian dan evaluasi sistem. Jangan memasukkan data pribadi.{% else %}Teks Anda tidak disimpan; hanya hasil analisis yang dicatat.{% endif %}</p>
     </div>
+
+    <div class="card about-section">
+        <h3>Tentang Alat Ini</h3>
+        <p>
+            Penelitian oleh Reed et al. (2019) di San Diego County, California, Amerika Serikat menunjukkan bahwa 68% dari 159 remaja perempuan usia 15–19 tahun mengalami kekerasan seksual siber, seperti pesan atau gambar seksual yang tidak diinginkan (53%), permintaan seksual (49%), intimidasi untuk mendapatkan foto seksual (36%), serta penyebaran foto tanpa izin (6%).
+        </p>
+        <p>
+            Menanggapi tingginya kasus tersebut, platform ini dikembangkan untuk membantu mendeteksi indikasi Kekerasan Berbasis Gender Online (KBGO) secara verbal pada media digital menggunakan teknologi pemrosesan bahasa alami.
+        </p>
+    </div>
+</div>
 </div>
 {% endblock %}
